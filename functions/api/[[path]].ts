@@ -42,9 +42,13 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
   }
 
   const incomingUrl = new URL(request.url)
-  const apiPath = incomingUrl.pathname.replace(/^\/api\/?/, '')
-  const targetUrl = new URL(apiPath, backendBaseUrl)
+  const apiPath = incomingUrl.pathname
+    .replace(/^\/api\/?/, '')
+    .replace(/^\/+/, '')
+  const targetUrl = new URL(backendBaseUrl)
+  targetUrl.pathname += apiPath
   targetUrl.search = incomingUrl.search
+  targetUrl.hash = ''
 
   const backendRequest = new Request(targetUrl, request)
   backendRequest.headers.delete('host')
@@ -71,8 +75,31 @@ export const onRequest: PagesFunction = async ({ request, env }) => {
   }
 
   try {
-    return await fetch(backendRequest)
-  } catch {
+    const response = await fetch(backendRequest)
+    const headers = new Headers(response.headers)
+    headers.delete('set-cookie')
+
+    if (!response.ok) {
+      console.error('Backend request failed', {
+        method: request.method,
+        pathname: incomingUrl.pathname,
+        status: response.status,
+        cfRay: response.headers.get('cf-ray'),
+      })
+    }
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    })
+  } catch (error) {
+    console.error('Backend request failed', {
+      method: request.method,
+      pathname: incomingUrl.pathname,
+      error: error instanceof Error ? error.message : String(error),
+    })
+
     return Response.json(
       { message: 'Backend request failed' },
       { status: 502 },

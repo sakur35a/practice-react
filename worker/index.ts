@@ -7,10 +7,24 @@ interface Fetcher {
 }
 
 export default {
-  fetch(request: Request, env: Env) {
+  async fetch(request: Request, env: Env) {
     const url = new URL(request.url)
     url.protocol = 'http:'
     url.host = 'backend'
-    return env.BACKEND.fetch(new Request(url, request))
+
+    try {
+      return await env.BACKEND.fetch(new Request(url, request))
+    } catch (error) {
+      console.error('VPC request failed', {
+        method: request.method,
+        pathname: url.pathname,
+        error: error instanceof Error ? error.message : String(error),
+      })
+
+      return Response.json(
+        { message: 'Backend unavailable' },
+        { status: 502 },
+      )
+    }
   },
 }
