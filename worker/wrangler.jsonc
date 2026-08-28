@@ -1,0 +1,15 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "diary-backend-proxy",
+  "main": "index.ts",
+  "compatibility_date": "2026-08-28",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vpc_services": [
+    {
+      "binding": "BACKEND",
+      "service_id": "01a04900-97de-77a2-bd71-ca5126c46730",
+      "remote": true
+    }
+  ]
+}
