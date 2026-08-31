@@ -1,13 +1,15 @@
 export interface Diary {
-    id: string | null,
-    title: string,
-    content: string
+  id: string
+  title: string
+  content: string
 }
 
+export type DiaryPreview = Diary
+
 export interface DiaryListResponse {
-    items: Diary[],
-    hasNext: boolean,
-    nextCursorId: string | null
+  items: DiaryPreview[]
+  hasNext: boolean
+  nextCursorId: string | null
 }
 
 export type CreateDiaryRequest = Omit<Diary, 'id'>
