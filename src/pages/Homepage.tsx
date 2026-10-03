@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, Outlet } from 'react-router'
 import { api } from '../api/client'
 import AppHeader from '../components/AppHeader'
 import type { DiaryListResponse, DiaryPreview } from '../types/diary'
@@ -102,7 +102,7 @@ export default function HomePage() {
               <>
                 <div className="diary-grid">
                   {visibleDiaries.map((diary, index) => (
-                    <Link className="diary-card" to={`/diary/${diary.id}`} key={diary.id}>
+                    <Link className="diary-card" to={`/diary/${diary.id}`} state={diary} preventScrollReset key={diary.id}>
                       <span className="card-number">{String(index + 1).padStart(2, '0')}</span>
                       <div><h3>{diary.title}</h3><p>{diary.content}</p></div>
                       <span className="card-arrow" aria-hidden="true">↗</span>
@@ -131,6 +131,7 @@ export default function HomePage() {
         <p>매일의 마음이 쌓여, 나만의 이야기가 됩니다.</p>
         <span>ITS DIARY · {new Date().getFullYear()}</span>
       </footer>
+      <Outlet />
     </>
   )
 }
