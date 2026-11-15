@@ -8,7 +8,9 @@ function App() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    if (!pathname.startsWith('/diary/')) window.scrollTo(0, 0)
+    // html에 scroll-behavior: smooth가 있어서 그냥 scrollTo(0, 0)이면 새 화면이 이전 스크롤 위치에 그려진 채로 위로 미끄러진다.
+    // 화면을 바꿀 때는 바로 맨 위로 보낸다
+    if (!pathname.startsWith('/diary/')) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
 
   return (

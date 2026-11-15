@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   color: #25231f;
   background: #f4f1ea;
   font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -25,6 +26,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 ::selection { color: #fff; background: #a55435; }
 
+/* index.html의 #root 안에 미리 그려 둔 헤더 틀. React가 붙으면 #root 내용이 통째로 바뀐다 */
+.no-boot-shell .boot-shell { display: none; }
 .app-shell { min-height: 100vh; }
 .skip-link {
   position: fixed;
@@ -325,6 +328,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .editor label:has(textarea) .field-count { bottom: .85rem; }
 .editor-actions { display: flex; align-items: center; justify-content: flex-end; gap: .75rem; }
 .shortcut-hint { margin: -1.4rem 0 0; color: #9b958a; font-size: .7rem; text-align: right; }
+.field-count[data-over="true"] { color: #8c332d; font-weight: 700; }
+.editor input[aria-invalid="true"], .editor textarea[aria-invalid="true"] { border-color: #8c332d; }
+.field-error { margin: .65rem 0 0; color: #8c332d; font-size: .82rem; line-height: 1.6; }
 .form-error { margin: -1rem 0 0; padding: .9rem 1rem; color: #8c332d; background: rgb(140 51 45 / 8%); border-radius: 10px; font-size: .82rem; line-height: 1.6; }
 
 .icon-button {
@@ -435,7 +441,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   border-bottom: 1px solid rgb(37 35 31 / 7%);
 }
 .sheet-toolbar .eyebrow { margin: 0; }
-.sheet-actions { display: flex; align-items: center; gap: .5rem; }
+/* 복사 버튼은 기록을 불러온 뒤에 나타난다. 그 자리(폭 8.5rem, 높이 2.4rem)를 미리 비워 두어 툴바가 움직이지 않게 한다 */
+.sheet-actions { display: flex; min-width: 8.5rem; min-height: 2.4rem; align-items: center; justify-content: flex-end; gap: .5rem; }
 .sheet-close {
   display: grid;
   width: 2.25rem;
@@ -456,7 +463,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .sheet-body > :nth-child(2) { animation-delay: 60ms; }
 .sheet-body > :nth-child(3) { animation-delay: 110ms; }
 .sheet-body > :nth-child(4) { animation-delay: 160ms; }
-.sheet-state { text-align: center; }
+/* 불러오는 중, 오류, 내용이 같은 최소 높이를 가져서 상태가 바뀌어도 시트가 커지거나 줄어들며 튀지 않는다.
+   값은 내용이 짧은 기록(제목 한 줄)의 본문 높이다: 위아래 패딩 + 제목 한 줄 + 구분선(2px + 위아래 2rem) + 본문 최소 120px + 푸터(위 여백 3.5rem + --detail-meta-h).
+   푸터는 좁은 화면에서 두 줄로 쌓인다(아래 540px 미디어 쿼리) */
+.detail-loading, .sheet-state {
+  --detail-meta-h: 36px;
+  min-height: calc(2 * clamp(1.5rem, 5vw, 3rem) + 1.15 * clamp(1.9rem, 4.5vw, 3rem) + 4rem + 2px + 120px + 3.5rem + var(--detail-meta-h));
+}
+.sheet-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .sheet-state > span { display: block; margin-bottom: .75rem; color: #a55435; font-size: 2rem; }
 .sheet-state p { color: #777166; line-height: 1.7; }
 .sheet-state .inline-actions { justify-content: center; }
@@ -518,6 +532,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .shortcut-hint { display: none; }
   .detail-content { font-size: 1rem; line-height: 1.9; }
   .detail-meta { align-items: flex-start; flex-direction: column; }
+  .detail-loading, .sheet-state { --detail-meta-h: 66px; }
   .detail-meta code { max-width: 100%; }
   .modal-card { padding: 1.5rem; }
   .sheet { inset: auto 0 0; width: 100%; max-height: 92vh; margin: 0; }
