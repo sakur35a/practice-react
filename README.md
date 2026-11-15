@@ -37,4 +37,8 @@ VITE_API_BASE_URL=https://api.ssobbs13.pp.ua/
 ```bash
 pnpm build
 pnpm lint
+pnpm test
 ```
+
+`pnpm test`는 Node 내장 테스트 러너(Node 22.18 이상)로 오류 응답 해석(`src/api`)을 확인합니다.
+별도 테스트 라이브러리는 쓰지 않습니다. 재시도 정책 시험은 로컬 HTTP 서버로 실제 `ky`를 돌려서 약 10초 걸립니다.

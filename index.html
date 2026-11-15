@@ -5,11 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f4f1ea" />
+    <!-- 이 앱은 밝은 테마 하나뿐이다. 브라우저가 첫 페인트 전에 어두운 바탕이나 강제 다크 모드를 적용하지 않게 먼저 알린다 -->
+    <meta name="color-scheme" content="light" />
     <meta name="description" content="매일의 마음을 조용히 모아두는 나만의 일기장" />
     <title>its diary · 나만의 조용한 기록</title>
+    <!-- JS에서 import하지 않고 여기서 링크한다. 개발 서버에서도 스타일시트가 렌더를 막는 진짜 <link>가 되어(빌드 결과와 같다)
+         스타일이 없는 HTML이 한 프레임 보이지 않는다. 빌드에서는 같은 파일이 해시 이름의 CSS로 나오고 head에 그대로 남는다 -->
+    <link rel="stylesheet" href="/src/index.css" />
+    <!-- 앱에 헤더가 없는 화면(모르는 경로의 404)에서는 틀을 숨긴다. 라우트: /, /write, /diary/:id.
+         body보다 먼저, 첫 페인트 전에 실행해야 해서 head에 둔다(body 끝에서 치우면 틀이 한 프레임 보였다가 사라진다) -->
+    <script>
+      if (!/^\/(write\/?|diary\/[^/]+\/?)?$/.test(location.pathname)) document.documentElement.classList.add('no-boot-shell')
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- React가 붙기 전(JS를 받는 동안)의 틀. 헤더 모양만 같게 그려 두고, createRoot().render()가 #root 안을 통째로 바꾼다.
+         높이(112px)와 폭이 실제 헤더와 같아서 바뀔 때 레이아웃이 움직이지 않는다. 장식이라 보조 기술에는 숨긴다 -->
+    <div id="root">
+      <div class="boot-shell" aria-hidden="true">
+        <div class="page-frame">
+          <header class="site-header">
+            <span class="brand">
+              <span class="brand-mark">i</span>
+              <span>its diary<small>나만의 조용한 기록</small></span>
+            </span>
+          </header>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
