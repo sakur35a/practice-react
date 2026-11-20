@@ -2,5 +2,9 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "diary",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-08-23"
+  "compatibility_date": "2026-08-23",
+  "vars": {
+    // Cloudflare Pages 빌드 이미지의 기본 bun 대신 bun.lock을 만든 버전으로 빌드한다.
+    "BUN_VERSION": "1.4.4"
+  }
 }
